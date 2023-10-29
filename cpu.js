@@ -82,7 +82,7 @@ class CPU {
                 this.registers.setUint16(registerTo, value);
                 return;
             }
-            case semantics.ADD_REG: {
+            case semantics.ADD_REG_REG: {
                 const r1 = this.fetch();
                 const r2 = this.fetch();
                 const registerValue1 = this.registers.getUint16(r1 * 2);
