@@ -28,10 +28,7 @@ writeableBytes[i++] = semantics.globals.ACC;
 writeableBytes[i++] = 0x01;
 writeableBytes[i++] = 0x00;
 
-cpu.inspect(cpu.getRegister('instructionPointer'));
-cpu.inspect(0x0100);
-
-for(let i = 0; i < 4; i++) {
+function runStep() {
     cpu.step();
     cpu.log();
     cpu.inspect(cpu.getRegister('instructionPointer'));
@@ -41,3 +38,5 @@ for(let i = 0; i < 4; i++) {
 cpu.log();
 cpu.inspect(cpu.getRegister('instructionPointer'));
 cpu.inspect(0x0100);
+
+for(let s = 0; s < 5; s++) runStep();
