@@ -4,7 +4,7 @@ const semantics    = require('./semantics');
 class CPU {
     constructor(memory) {
         this.memory = memory;
-        this.registerNames = ['instructionPointer', 'accumulator', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8'];
+        this.registerNames = ['ip', 'accumulator', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8'];
         this.registers = createMemory(this.registerNames.length * 2);
         this.registerMap = this.registerNames.reduce((map, name, i) => {
             map[name] = i * 2;
@@ -43,9 +43,9 @@ class CPU {
 
     fetch(bitSize = 8) {
         const eightBit = bitSize === 8;
-        const nextInstruction = this.getRegister('instructionPointer');
+        const nextInstruction = this.getRegister('ip');
         const instruction     = eightBit ? this.memory.getUint8(nextInstruction) : this.memory.getUint16(nextInstruction);
-        this.setRegister('instructionPointer', nextInstruction + (eightBit ? 1 : 2));
+        this.setRegister('ip', nextInstruction + (eightBit ? 1 : 2));
         return instruction;
     }
 

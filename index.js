@@ -31,12 +31,12 @@ writeableBytes[i++] = 0x00;
 function runStep() {
     cpu.step();
     cpu.log();
-    cpu.inspect(cpu.getRegister('instructionPointer'));
+    cpu.inspect(cpu.getRegister('ip'));
     cpu.inspect(0x0100);
 }
 
 cpu.log();
-cpu.inspect(cpu.getRegister('instructionPointer'));
+cpu.inspect(cpu.getRegister('ip'));
 cpu.inspect(0x0100);
 
 for(let s = 0; s < 5; s++) runStep();
