@@ -82,6 +82,12 @@ class CPU {
                 this.registers.setUint16(registerTo, value);
                 return;
             }
+            case semantics.JMP_NOT_EQ: {
+                const value = this.fetch(16);
+                const address = this.fetch(16);
+                if (value !== this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
             case semantics.ADD_REG_REG: {
                 const r1 = this.fetch();
                 const r2 = this.fetch();
