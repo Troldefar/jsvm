@@ -20,7 +20,7 @@ class CPU {
 
     inspect(address) {
         const nextBytes = Array.from({length: 8}, (_, i) => 
-            this.memory.getUint8(address + 1)
+            this.memory.getUint8(address + i)
         ).map(value => `0x${value.toString(16).padStart(2, '0')}`);
 
         console.log(`0x${address.toString(16).padStart(4, '0')}: ${nextBytes.join(' ')}`);
