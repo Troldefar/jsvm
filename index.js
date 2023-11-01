@@ -10,35 +10,6 @@ const cpu = new CPU(memory);
 
 let i = 0;
 
-/**
- * Second test
- */
-
-writeableBytes[i++] = semantics.MOVE_MEM_REG;
-writeableBytes[i++] = 0x01;
-writeableBytes[i++] = 0x00;
-writeableBytes[i++] = semantics.globals.R1;
-
-writeableBytes[i++] = semantics.MOVE_LIT_REG;
-writeableBytes[i++] = 0x00;
-writeableBytes[i++] = 0x01;
-writeableBytes[i++] = semantics.globals.R2;
-
-writeableBytes[i++] = semantics.ADD_REG_REG;
-writeableBytes[i++] = semantics.globals.R1;
-writeableBytes[i++] = semantics.globals.R2;
-
-writeableBytes[i++] = semantics.MOVE_REG_MEM;
-writeableBytes[i++] = semantics.globals.ACC;
-writeableBytes[i++] = 0x01;
-writeableBytes[i++] = 0x00;
-
-writeableBytes[i++] = semantics.JMP_NOT_EQ;
-writeableBytes[i++] = 0x00;
-writeableBytes[i++] = 0x03;
-writeableBytes[i++] = 0x00;
-writeableBytes[i++] = 0x00;
-
 function debugVM() {
     cpu.log();
     cpu.inspect(cpu.getRegister('ip'));
@@ -58,8 +29,39 @@ lineReader.on('line', function() {
 });
 
 /**
+ * Second test
+ * Add values to register
+ * Jump if not equal to three
+    writeableBytes[i++] = semantics.MOVE_MEM_REG;
+    writeableBytes[i++] = 0x01;
+    writeableBytes[i++] = 0x00;
+    writeableBytes[i++] = semantics.globals.R1;
+
+    writeableBytes[i++] = semantics.MOVE_LIT_REG;
+    writeableBytes[i++] = 0x00;
+    writeableBytes[i++] = 0x01;
+    writeableBytes[i++] = semantics.globals.R2;
+
+    writeableBytes[i++] = semantics.ADD_REG_REG;
+    writeableBytes[i++] = semantics.globals.R1;
+    writeableBytes[i++] = semantics.globals.R2;
+
+    writeableBytes[i++] = semantics.MOVE_REG_MEM;
+    writeableBytes[i++] = semantics.globals.ACC;
+    writeableBytes[i++] = 0x01;
+    writeableBytes[i++] = 0x00;
+
+    writeableBytes[i++] = semantics.JMP_NOT_EQ;
+    writeableBytes[i++] = 0x00;
+    writeableBytes[i++] = 0x03;
+    writeableBytes[i++] = 0x00;
+    writeableBytes[i++] = 0x00;
+*/
+
+/**
  * First test
- * 
+ * Add values to registers
+ * Add registers
     writeableBytes[i++] = semantics.MOVE_LIT_REG;
     writeableBytes[i++] = 0x12;
     writeableBytes[i++] = 0x34;
