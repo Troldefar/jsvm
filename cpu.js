@@ -2,14 +2,21 @@ const createMemory = require('./createMemory');
 const semantics    = require('./semantics');
 
 class CPU {
+
+    STACK_POINTER_DECEMENTER = 2;
+    ONE_BYTE = 1;
+    TWO_BYTES = 2;
+    registerNames = ['ip', 'accumulator', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8', 'sp', 'fp'];
+
     constructor(memory) {
         this.memory = memory;
-        this.registerNames = ['ip', 'accumulator', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8'];
         this.registers = createMemory(this.registerNames.length * 2);
         this.registerMap = this.registerNames.reduce((map, name, i) => {
             map[name] = i * 2;
             return map;
         }, {});
+        this.setRegister('sp', memory.byteLength - this.ONE_BYTE - this.ONE_BYTE);
+        this.setRegister('fp', memory.byteLength - this.ONE_BYTE - this.ONE_BYTE);
     }
 
     log() {
@@ -53,6 +60,18 @@ class CPU {
         return (this.fetch() % this.registerNames.length) * 2;
     }
 
+    push(value) {
+        const spAddress = this.getRegister('sp');
+        this.memory.setUint16(spAddress, value);
+        this.setRegister('sp', spAddress - this.TWO_BYTES);
+    }
+
+    pop() {
+        const nextSpAddress = this.getRegister('sp') + this.TWO_BYTES;
+        this.setRegister('sp', nextSpAddress);
+        return this.memory.getUint16(nextSpAddress);
+    }
+
     execute(instruction) {
         switch (instruction) {
             case semantics.MOVE_LIT_REG: {
@@ -89,11 +108,27 @@ class CPU {
                 return;
             }
             case semantics.ADD_REG_REG: {
-                const r1 = this.fetch();
-                const r2 = this.fetch();
-                const registerValue1 = this.registers.getUint16(r1 * 2);
-                const registerValue2 = this.registers.getUint16(r2 * 2);
+                const r1 = this.getNextRegister();
+                const r2 = this.getNextRegister();
+                const registerValue1 = this.registers.getUint16(r1 * this.TWO_BYTES);
+                const registerValue2 = this.registers.getUint16(r2 * this.TWO_BYTES);
                 this.setRegister('accumulator', registerValue1 + registerValue2);
+                return;
+            }
+            case semantics.PSH_LIT_VAL: {
+                const value = this.fetch(16);
+                this.push(value);
+                return;
+            }
+            case semantics.PSH_REG_VAL: {
+                const registerIndex = this.getNextRegister();
+                this.push(this.registers.getUint16(registerIndex));
+                return;
+            }
+            case semantics.POP: {
+                const registerIndex = this.getNextRegister();
+                const value = this.pop();
+                this.registers.setUint16(registerIndex, value);
                 return;
             }
             default:
