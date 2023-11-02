@@ -7,6 +7,9 @@ const JMP_NOT_EQ   = 0x15;
 const PSH_LIT_VAL  = 0x17;
 const PSH_REG_VAL  = 0x18;
 const POP          = 0x1A;
+const CAL_LIT      = 0x5E;
+const CAL_REG      = 0x5F;
+const RET          = 0x60;
 
 globals = {IP: 0, ACC: 1, R1: 2, R2: 3, R3: 4, R4: 5, R5: 6, R6: 7, R7: 8, R8: 9, SP: 10, FP: 11};
 
@@ -14,6 +17,11 @@ const ACC_LOC = 0x0100;
 
 module.exports = {
     MOVE_LIT_REG, MOVE_REG_REG, MOVE_REG_MEM, MOVE_MEM_REG, 
-    ADD_REG_REG, JMP_NOT_EQ, ACC_LOC, PSH_LIT_VAL, PSH_REG_VAL, POP, 
+    ADD_REG_REG, 
+    JMP_NOT_EQ, 
+    ACC_LOC, 
+    PSH_LIT_VAL, PSH_REG_VAL, POP,
+    CAL_LIT, CAL_REG,
+    RET,
     globals
 };
