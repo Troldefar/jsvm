@@ -6,6 +6,8 @@ class CPU {
     STACK_POINTER_DECEMENTER = 2;
     ONE_BYTE = 1;
     TWO_BYTES = 2;
+    HARDCODED_MEMORY_START = 0xffff
+
     registerNames = ['ip', 'accumulator', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8', 'sp', 'fp'];
 
     constructor(memory) {
@@ -15,8 +17,8 @@ class CPU {
             map[name] = i * 2;
             return map;
         }, {});
-        this.setRegister('sp', memory.byteLength - this.ONE_BYTE - this.ONE_BYTE);
-        this.setRegister('fp', memory.byteLength - this.ONE_BYTE - this.ONE_BYTE);
+        this.setRegister('sp', this.HARDCODED_MEMORY_START - this.ONE_BYTE);
+        this.setRegister('fp', this.HARDCODED_MEMORY_START - this.ONE_BYTE);
         this.stackFrameSize = 0;
     }
 
@@ -28,7 +30,7 @@ class CPU {
 
     inspect(address, n = 8) {
         const nextBytes = Array.from({length: n}, (_, i) => 
-            this.memory.getUint8(address + i)
+            this.memory.getUint(address + i)
         ).map(value => `0x${value.toString(16).padStart(2, '0')}`);
 
         console.log(`0x${address.toString(16).padStart(4, '0')}: ${nextBytes.join(' ')}`);
@@ -52,7 +54,7 @@ class CPU {
     fetch(bitSize = 8) {
         const eightBit = bitSize === 8;
         const nextInstruction = this.getRegister('ip');
-        const instruction     = eightBit ? this.memory.getUint8(nextInstruction) : this.memory.getUint16(nextInstruction);
+        const instruction     = eightBit ? this.memory.getUint(nextInstruction) : this.memory.getUint(nextInstruction, 16);
         this.setRegister('ip', nextInstruction + (eightBit ? 1 : 2));
         return instruction;
     }
@@ -63,7 +65,7 @@ class CPU {
 
     push(value) {
         const spAddress = this.getRegister('sp');
-        this.memory.setUint16(spAddress, value);
+        this.memory.setUint(spAddress, value, 16);
         this.setRegister('sp', spAddress - this.TWO_BYTES);
         this.stackFrameSize += 2;
     }
@@ -80,7 +82,7 @@ class CPU {
         const nextSpAddress = this.getRegister('sp') + this.TWO_BYTES;
         this.setRegister('sp', nextSpAddress);
         this.stackFrameSize -= 2;
-        return this.memory.getUint16(nextSpAddress);
+        return this.memory.getUint(nextSpAddress, 16);
     }
 
     popState() {
@@ -114,13 +116,13 @@ class CPU {
                 const registerFrom = this.getNextRegister();
                 const address = this.fetch(16);
                 const value = this.registers.getUint16(registerFrom);
-                this.memory.setUint16(address, value);
+                this.memory.setUint(address, value, 16);
                 return;
             }
             case semantics.MOVE_MEM_REG: {
                 const address = this.fetch(16);
                 const registerTo = this.getNextRegister();
-                const value = this.memory.getUint16(address);
+                const value = this.memory.getUint(address, 16);
                 this.registers.setUint16(registerTo, value);
                 return;
             }
@@ -133,8 +135,8 @@ class CPU {
             case semantics.ADD_REG_REG: {
                 const r1 = this.getNextRegister();
                 const r2 = this.getNextRegister();
-                const registerValue1 = this.registers.getUint16(r1 * this.TWO_BYTES);
-                const registerValue2 = this.registers.getUint16(r2 * this.TWO_BYTES);
+                const registerValue1 = this.registers.getUint16(r1);
+                const registerValue2 = this.registers.getUint16(r2);
                 this.setRegister('accumulator', registerValue1 + registerValue2);
                 return;
             }
@@ -171,9 +173,18 @@ class CPU {
                 this.popState();
                 return;
             }
+            case semantics.HALT: {
+                return true;
+            }
             default:
                 break;
         }
+    }
+
+    run() {
+        const halt = this.step();
+        if (halt) return;
+        setImmediate(() => this.run());
     }
 }
 

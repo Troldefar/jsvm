@@ -10,6 +10,7 @@ const POP          = 0x1A;
 const CAL_LIT      = 0x5E;
 const CAL_REG      = 0x5F;
 const RET          = 0x60;
+const HALT         = 0xFF;
 
 globals = {IP: 0, ACC: 1, R1: 2, R2: 3, R3: 4, R4: 5, R5: 6, R6: 7, R7: 8, R8: 9, SP: 10, FP: 11};
 
@@ -23,5 +24,6 @@ module.exports = {
     PSH_LIT_VAL, PSH_REG_VAL, POP,
     CAL_LIT, CAL_REG,
     RET,
+    HALT,
     globals
 };
