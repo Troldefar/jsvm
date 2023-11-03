@@ -71,7 +71,7 @@ class CPU {
     pushState() {
         for (let i = 1; i < 9; i++) this.push(this.getRegister(`r${i}`));
         this.push(this.getRegister('ip'));
-        this.stackFrameSize += 2;
+        this.push(this.stackFrameSize + 2);
         this.setRegister('fp', this.getRegister('sp'));
         this.stackFrameSize = 0;
     }

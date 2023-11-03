@@ -10,62 +10,6 @@ const cpu = new CPU(memory);
 const subroutineAddress = 0x3000;
 let i = 0;
 
-writeableBytes[i++] = semantics.PSH_LIT_VAL;
-writeableBytes[i++] = 0x33;
-writeableBytes[i++] = 0x33;
-
-writeableBytes[i++] = semantics.PSH_LIT_VAL;
-writeableBytes[i++] = 0x22;
-writeableBytes[i++] = 0x22;
-
-writeableBytes[i++] = semantics.PSH_LIT_VAL;
-writeableBytes[i++] = 0x11;
-writeableBytes[i++] = 0x11;
-
-writeableBytes[i++] = semantics.MOVE_LIT_REG;
-writeableBytes[i++] = 0x12;
-writeableBytes[i++] = 0x34;
-writeableBytes[i++] = semantics.globals.R1;
-
-writeableBytes[i++] = semantics.MOVE_LIT_REG;
-writeableBytes[i++] = 0x56;
-writeableBytes[i++] = 0x78;
-writeableBytes[i++] = semantics.globals.R4;
-
-writeableBytes[i++] = semantics.PSH_LIT_VAL;
-writeableBytes[i++] = 0x00;
-writeableBytes[i++] = 0x00;
-
-writeableBytes[i++] = semantics.CAL_LIT;
-writeableBytes[i++] = (subroutineAddress & 0xff00) >> 8;
-writeableBytes[i++] = (subroutineAddress & 0xff00);
-
-i = subroutineAddress;
-
-writeableBytes[i++] = semantics.PSH_LIT_VAL;
-writeableBytes[i++] = 0x01;
-writeableBytes[i++] = 0x02;
-
-writeableBytes[i++] = semantics.PSH_LIT_VAL;
-writeableBytes[i++] = 0x03;
-writeableBytes[i++] = 0x04;
-
-writeableBytes[i++] = semantics.PSH_LIT_VAL;
-writeableBytes[i++] = 0x05;
-writeableBytes[i++] = 0x06;
-
-writeableBytes[i++] = semantics.MOVE_LIT_REG;
-writeableBytes[i++] = 0x08;
-writeableBytes[i++] = 0x0B;
-writeableBytes[i++] = semantics.globals.R1;
-
-writeableBytes[i++] = semantics.MOVE_LIT_REG;
-writeableBytes[i++] = 0x09;
-writeableBytes[i++] = 0x0A;
-writeableBytes[i++] = semantics.globals.R8;
-
-writeableBytes[i++] = semantics.RET;
-
 function debugVM(step = false) {
     if (step) cpu.step();
     cpu.log();
@@ -83,6 +27,74 @@ const lineReader = readline.createInterface({
 lineReader.on('line', function() {
     debugVM(true);
 });
+
+/**
+ * Fourth test
+ * Push values
+ * Go sub routine
+ * Change values
+ * Return
+ * Observe
+    writeableBytes[i++] = semantics.PSH_LIT_VAL;
+    writeableBytes[i++] = 0x33;
+    writeableBytes[i++] = 0x33;
+
+    writeableBytes[i++] = semantics.PSH_LIT_VAL;
+    writeableBytes[i++] = 0x22;
+    writeableBytes[i++] = 0x22;
+
+    writeableBytes[i++] = semantics.PSH_LIT_VAL;
+    writeableBytes[i++] = 0x11;
+    writeableBytes[i++] = 0x11;
+
+    writeableBytes[i++] = semantics.MOVE_LIT_REG;
+    writeableBytes[i++] = 0x12;
+    writeableBytes[i++] = 0x34;
+    writeableBytes[i++] = semantics.globals.R1;
+
+    writeableBytes[i++] = semantics.MOVE_LIT_REG;
+    writeableBytes[i++] = 0x56;
+    writeableBytes[i++] = 0x78;
+    writeableBytes[i++] = semantics.globals.R4;
+
+    writeableBytes[i++] = semantics.PSH_LIT_VAL;
+    writeableBytes[i++] = 0x00;
+    writeableBytes[i++] = 0x00;
+
+    writeableBytes[i++] = semantics.CAL_LIT;
+    writeableBytes[i++] = (subroutineAddress & 0xff00) >> 8;
+    writeableBytes[i++] = (subroutineAddress & 0x00ff);
+
+    writeableBytes[i++] = semantics.PSH_LIT_VAL;
+    writeableBytes[i++] = 0x44;
+    writeableBytes[i++] = 0x44;
+
+    i = subroutineAddress;
+
+    writeableBytes[i++] = semantics.PSH_LIT_VAL;
+    writeableBytes[i++] = 0x01;
+    writeableBytes[i++] = 0x02;
+
+    writeableBytes[i++] = semantics.PSH_LIT_VAL;
+    writeableBytes[i++] = 0x03;
+    writeableBytes[i++] = 0x04;
+
+    writeableBytes[i++] = semantics.PSH_LIT_VAL;
+    writeableBytes[i++] = 0x05;
+    writeableBytes[i++] = 0x06;
+
+    writeableBytes[i++] = semantics.MOVE_LIT_REG;
+    writeableBytes[i++] = 0x07;
+    writeableBytes[i++] = 0x08;
+    writeableBytes[i++] = semantics.globals.R1;
+
+    writeableBytes[i++] = semantics.MOVE_LIT_REG;
+    writeableBytes[i++] = 0x09;
+    writeableBytes[i++] = 0x0A;
+    writeableBytes[i++] = semantics.globals.R8;
+
+    writeableBytes[i++] = semantics.RET;
+ */
 
 /**
  * Third test
