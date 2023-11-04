@@ -22,8 +22,9 @@ const checkCmd = cmd => {
 
 const fakeDevice = () => {
     return {
-        getUint: (byte = 8) => 0,
-        setUint: (address, data) => {
+        getUint8: () => 0,
+        getUint16: () => 0,
+        setUint16: (address, data) => {
             const cmd = (data & 0xff00) >> 8;
             const characterValue = data & 0x00ff;
             checkCmd(cmd);

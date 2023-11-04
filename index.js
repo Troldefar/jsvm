@@ -29,7 +29,7 @@ const writett = (character, cmd, position) => {
 
 writett(' ', 0xff, 0);
 
-for(let index = 0; i <= 0xff; index++) {
+for(let index = 0; i <= 0xffff; index++) {
     const cmd = index % 2 === 0 ? 0x01 : 0x02;
     writett('*', cmd, index);
 }

@@ -54,7 +54,7 @@ class CPU {
     fetch(bitSize = 8) {
         const eightBit = bitSize === 8;
         const nextInstruction = this.getRegister('ip');
-        const instruction     = eightBit ? this.memory.getUint(nextInstruction) : this.memory.getUint(nextInstruction, 16);
+        const instruction     = eightBit ? this.memory.getUint8(nextInstruction) : this.memory.getUint16(nextInstruction);
         this.setRegister('ip', nextInstruction + (eightBit ? 1 : 2));
         return instruction;
     }
@@ -65,7 +65,7 @@ class CPU {
 
     push(value) {
         const spAddress = this.getRegister('sp');
-        this.memory.setUint(spAddress, value, 16);
+        this.memory.setUint16(spAddress, value);
         this.setRegister('sp', spAddress - this.TWO_BYTES);
         this.stackFrameSize += 2;
     }
@@ -116,7 +116,7 @@ class CPU {
                 const registerFrom = this.getNextRegister();
                 const address = this.fetch(16);
                 const value = this.registers.getUint16(registerFrom);
-                this.memory.setUint(address, value, 16);
+                this.memory.setUint16(address, value);
                 return;
             }
             case semantics.MOVE_MEM_REG: {
