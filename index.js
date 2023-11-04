@@ -15,9 +15,9 @@ const writeableBytes = new Uint8Array(memory.buffer);
 const cpu = new CPU(iMemoryMapper);
 let i = 0;
 
-const writett = (character, position) => {
+const writett = (character, cmd, position) => {
     writeableBytes[i++] = semantics.MOVE_LIT_REG;
-    writeableBytes[i++] = 0x00;
+    writeableBytes[i++] = cmd;
     writeableBytes[i++] = character.charCodeAt(0);
     writeableBytes[i++] = semantics.globals.R1;
 
@@ -27,8 +27,11 @@ const writett = (character, position) => {
     writeableBytes[i++] = position;
 };
 
+writett(' ', 0xff, 0);
+
 'Hello world!'.split('').forEach((c, i) => {
-    writett(c, i);
+    const cmd = i % 2 === 0 ? 0x01 : 0x02;
+    writett(c, cmd, i);
 });
 
 writeableBytes[i++] = semantics.HALT;
