@@ -12,7 +12,7 @@ iMemoryMapper.mapDevice(fakeDevice(), 0x3000, 0x30ff, true);
 
 const writeableBytes = new Uint8Array(memory.buffer);
 
-const cpu = new CPU(iMemoryMapper);
+const iCpu = new CPU(iMemoryMapper);
 let i = 0;
 
 const writett = (character, cmd, position) => {
@@ -29,11 +29,11 @@ const writett = (character, cmd, position) => {
 
 writett(' ', 0xff, 0);
 
-'Hello world!'.split('').forEach((c, i) => {
-    const cmd = i % 2 === 0 ? 0x01 : 0x02;
-    writett(c, cmd, i);
-});
+for(let index = 0; i <= 0xff; index++) {
+    const cmd = index % 2 === 0 ? 0x01 : 0x02;
+    writett('*', cmd, index);
+}
 
 writeableBytes[i++] = semantics.HALT;
 
-cpu.run();
+iCpu.run();

@@ -14,14 +14,14 @@ class MemoryMapper {
         return () => this.regions = this.regions.filter(x => x !== region);
     }
 
-    findRegion(address) {
+    getRegion(address) {
         let region = this.regions.find(region => address >= region.start && address <= region.end);
         if (!region) throw new Error(`No memory region found for the address: ${address}`);
         return region;
     }
 
     getUint(address, byte = 8) {
-        const region = this.findRegion(address);
+        const region = this.getRegion(address);
         const calculatedAddress = region.remap ? address - region.start : address;
         return byte === 8 ? 
             region.device.getUint8(calculatedAddress)
@@ -30,7 +30,7 @@ class MemoryMapper {
     }
 
     setUint(address, value, byte = 8) {
-        const region = this.findRegion(address);
+        const region = this.getRegion(address);
         const calculatedAddress = region.remap ? address - region.start : address;
         return byte === 8 ? 
             region.device.setUint(calculatedAddress, value)

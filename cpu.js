@@ -6,7 +6,7 @@ class CPU {
     STACK_POINTER_DECEMENTER = 2;
     ONE_BYTE = 1;
     TWO_BYTES = 2;
-    HARDCODED_MEMORY_START = 0xffff
+    HARDCODED_MEMORY_START = 0xffff;
 
     registerNames = ['ip', 'accumulator', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8', 'sp', 'fp'];
 
