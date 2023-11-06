@@ -99,10 +99,166 @@ class CPU {
 
     execute(instruction) {
         switch (instruction) {
+            case semantics.ADD_REG_REG: {
+                const r1 = this.getNextRegister();
+                const r2 = this.getNextRegister();
+                const registerValue1 = this.registers.getUint16(r1);
+                const registerValue2 = this.registers.getUint16(r2);
+                this.setRegister('accumulator', registerValue1 + registerValue2);
+                return;
+            }
+            case semantics.ADD_LIT_REG: {
+                const immediateValue = this.fetch(16);
+                const r1 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                this.setRegister(semantics.globals.ACC, immediateValue + registerValue);
+                return;
+            }
+            case semantics.INC_REG: {
+                const r1 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                this.registers.setUint16(r1, (registerValue + 1));
+                return;
+            }
+            case semantics.DEC_REG: {
+                const r1 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                this.registers.setUint16(r1, (registerValue - 1));
+                return;
+            }
+            /**
+             * (* n^2 )
+             */
+            case semantics.LSF_REG_LIT: {
+                const r1 = this.getNextRegister();
+                const literal = this.fetch();
+                const immediateValue = this.registers.getUint16(r1);
+                this.registers.setUint32(r1, (immediateValue << literal));
+                return;
+            }
+            case semantics.LSF_REG_REG: {
+                const r1 = this.getNextRegister();
+                const r2 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                const shiftBy = this.registers.getUint16(r2);
+                this.setRegister(r1, (registerValue << shiftBy));
+                return;
+            }
+            /**
+             * (/ n^2 )
+             */
+            case semantics.RSF_REG_LIT: {
+                const r1 = this.getNextRegister();
+                const literal = this.fetch();
+                const immediateValue = this.registers.getUint16(r1);
+                this.registers.setUint32(r1, (immediateValue >> literal));
+                return;
+            }
+            case semantics.RSF_REG_REG: {
+                const r1 = this.getNextRegister();
+                const r2 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                const shiftBy = this.registers.getUint16(r2);
+                this.setRegister(r1, (registerValue >> shiftBy));
+                return;
+            }
+            case semantics.AND_REG_REG: {
+                const r1 = this.getNextRegister();
+                const literal = this.fetch();
+                const registerValue = this.registers.getUint16(r1);
+                this.setRegister(r1, (registerValue & literal));
+                return;
+            }
+            case semantics.AND_REG_REG: {
+                const r1 = this.getNextRegister();
+                const r2 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                const shiftBy = this.registers.getUint16(r2);
+                this.setRegister(r1, (registerValue & shiftBy));
+                return;
+            }
+            case semantics.OR_REG_REG: {
+                const r1 = this.getNextRegister();
+                const literal = this.fetch();
+                const registerValue = this.registers.getUint16(r1);
+                this.registers.setUint16(r1, (registerValue | literal));
+                return;
+            }
+            case semantics.OR_REG_REG: {
+                const r1 = this.getNextRegister();
+                const r2 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                const shiftBy = this.registers.getUint16(r2);
+                this.setRegister(r1, (registerValue | shiftBy));
+                return;
+            }
+            case semantics.XOR_REG_REG: {
+                const r1 = this.getNextRegister();
+                const literal = this.fetch();
+                const registerValue = this.registers.getUint16(r1);
+                this.setRegister(r1, (registerValue ^ literal));
+                return;
+            }
+            case semantics.XOR_REG_REG: {
+                const r1 = this.getNextRegister();
+                const r2 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                const shiftBy = this.registers.getUint16(r2);
+                this.setRegister(r1, (registerValue ^ shiftBy));
+                return;
+            }
+            case semantics.NOT: {
+                const r1 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                /**
+                 * Since the javascript engine turns our 16 bit number into a 32bit bit
+                 * we need to remove the top part
+                 */
+                const calculated = (~registerValue & 0xffff);
+                this.setRegister(semantics.globals.ACC, calculated);
+                return;
+            }
+            case semantics.SUB_LIT_REG: {
+                const immediateValue = this.fetch(16);
+                const r1 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                this.setRegister(semantics.globals.ACC, immediateValue - registerValue);
+                return; 
+            }
+            case semantics.SUB_REG_LIT: {
+                const r1 = this.getNextRegister();
+                const immediateValue = this.fetch(16);
+                const registerValue = this.registers.getUint16(r1);
+                this.setRegister(semantics.globals.ACC, immediateValue - registerValue);
+                return; 
+            }
+            case semantics.SUB_REG_LIT: {
+                const r1 = this.getNextRegister();
+                const r2 = this.fetch(16);
+                const register1Value = this.registers.getUint16(r1);
+                const register2Value = this.registers.getUint16(r2);
+                this.setRegister(semantics.globals.ACC, register1Value - register2Value);
+                return; 
+            }
+            case semantics.MUL_LIT_REG: {
+                const immediateValue = this.fetch(16);
+                const r1 = this.getNextRegister();
+                const registerValue = this.registers.getUint16(r1);
+                this.setRegister(semantics.globals.ACC, immediateValue * registerValue);
+                return;
+            }
+            case semantics.MUL_REG_REG: {
+                const r1 = this.getNextRegister();
+                const r2 = this.fetch(16);
+                const register1Value = this.registers.getUint16(r1);
+                const register2Value = this.registers.getUint16(r2);
+                this.setRegister(semantics.globals.ACC, register1Value * register2Value); 
+                return;
+            }
             case semantics.MOVE_LIT_REG: {
-                const literal = this.fetch(16);
+                const immediateValue = this.fetch(16);
                 const register  = this.getNextRegister();
-                this.registers.setUint16(register, literal);
+                this.registers.setUint16(register, immediateValue);
                 return;
             }
             case semantics.MOVE_REG_REG: {
@@ -126,18 +282,38 @@ class CPU {
                 this.registers.setUint16(registerTo, value);
                 return;
             }
+            case semantics.MOVE_LIT_MEM: {
+                const value = this.fetch(16);
+                const address = this.fetch(16);
+                this.memory.setUint16(address, value);
+                return;
+            }
+            case semantics.MOVE_REG_PRT_REG: {
+                const r1 = this.getNextRegister();
+                const r2 = this.getNextRegister();
+                const pointer = this.registers.getUint16(r1);
+                const value   = this.memory.getUint16(pointer);
+                this.registers.setUint16(r2, value);
+                return;
+            }
+            /**
+             * Make memory regions relative to another another so that 
+             * Allocted region will always start at 0x0100
+             * Allocted region will always end at 0xffff
+             */
+            case semantics.MOVE_LIT_OFF_REG: {
+                const baseAddress = this.fetch(16);
+                const r1 = this.getNextRegister();
+                const r2 = this.getNextRegister();
+                const offset = this.registers.getUint16(r1);
+                const value = this.memory.getUint16(baseAddress + offset);
+                this.registers.setUint16(r2, value);
+                return;
+            }
             case semantics.JMP_NOT_EQ: {
                 const value = this.fetch(16);
                 const address = this.fetch(16);
                 if (value !== this.getRegister('accumulator')) this.setRegister('ip', address);
-                return;
-            }
-            case semantics.ADD_REG_REG: {
-                const r1 = this.getNextRegister();
-                const r2 = this.getNextRegister();
-                const registerValue1 = this.registers.getUint16(r1);
-                const registerValue2 = this.registers.getUint16(r2);
-                this.setRegister('accumulator', registerValue1 + registerValue2);
                 return;
             }
             case semantics.PSH_LIT_VAL: {
