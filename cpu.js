@@ -111,7 +111,7 @@ class CPU {
                 const immediateValue = this.fetch(16);
                 const r1 = this.getNextRegister();
                 const registerValue = this.registers.getUint16(r1);
-                this.setRegister(semantics.globals.ACC, immediateValue + registerValue);
+                this.setRegister('accumulator', immediateValue + registerValue);
                 return;
             }
             case semantics.INC_REG: {
@@ -215,21 +215,21 @@ class CPU {
                  * we need to remove the top part
                  */
                 const calculated = (~registerValue & 0xffff);
-                this.setRegister(semantics.globals.ACC, calculated);
+                this.setRegister('accumulator', calculated);
                 return;
             }
             case semantics.SUB_LIT_REG: {
                 const immediateValue = this.fetch(16);
                 const r1 = this.getNextRegister();
                 const registerValue = this.registers.getUint16(r1);
-                this.setRegister(semantics.globals.ACC, immediateValue - registerValue);
+                this.setRegister('accumulator', immediateValue - registerValue);
                 return; 
             }
             case semantics.SUB_REG_LIT: {
                 const r1 = this.getNextRegister();
                 const immediateValue = this.fetch(16);
                 const registerValue = this.registers.getUint16(r1);
-                this.setRegister(semantics.globals.ACC, immediateValue - registerValue);
+                this.setRegister('accumulator', immediateValue - registerValue);
                 return; 
             }
             case semantics.SUB_REG_LIT: {
@@ -237,14 +237,14 @@ class CPU {
                 const r2 = this.fetch(16);
                 const register1Value = this.registers.getUint16(r1);
                 const register2Value = this.registers.getUint16(r2);
-                this.setRegister(semantics.globals.ACC, register1Value - register2Value);
+                this.setRegister('accumulator', register1Value - register2Value);
                 return; 
             }
             case semantics.MUL_LIT_REG: {
                 const immediateValue = this.fetch(16);
                 const r1 = this.getNextRegister();
                 const registerValue = this.registers.getUint16(r1);
-                this.setRegister(semantics.globals.ACC, immediateValue * registerValue);
+                this.setRegister('accumulator', immediateValue * registerValue);
                 return;
             }
             case semantics.MUL_REG_REG: {
@@ -252,7 +252,7 @@ class CPU {
                 const r2 = this.fetch(16);
                 const register1Value = this.registers.getUint16(r1);
                 const register2Value = this.registers.getUint16(r2);
-                this.setRegister(semantics.globals.ACC, register1Value * register2Value); 
+                this.setRegister('accumulator', register1Value * register2Value); 
                 return;
             }
             case semantics.MOVE_LIT_REG: {
@@ -316,6 +316,78 @@ class CPU {
                 if (value !== this.getRegister('accumulator')) this.setRegister('ip', address);
                 return;
             }
+            case semantics.JNE_REG: {
+                const r1 = this.getNextRegister();
+                const immediateValue = this.registers.getUint16(r1);
+                const address = this.fetch(16);
+                if (immediateValue !== this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
+            case semantics.JEQ_LIT: {
+                const value = this.fetch(16);
+                const address = this.fetch(16);
+                if (value === this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
+            case semantics.JEQ_REG: {
+                const r1 = this.getNextRegister();
+                const immediateValue = this.registers.getUint16(r1);
+                const address = this.fetch(16);
+                if (immediateValue === this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
+            case semantics.JLT_LIT: {
+                const value = this.fetch(16);
+                const address = this.fetch(16);
+                if (value < this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
+            case semantics.JLT_REG: {
+                const r1 = this.getNextRegister();
+                const immediateValue = this.registers.getUint16(r1);
+                const address = this.fetch(16);
+                if (immediateValue < this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
+            case semantics.JGT_LIT: {
+                const value = this.fetch(16);
+                const address = this.fetch(16);
+                if (value > this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
+            case semantics.JGT_REG: {
+                const r1 = this.getNextRegister();
+                const immediateValue = this.registers.getUint16(r1);
+                const address = this.fetch(16);
+                if (immediateValue > this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
+            case semantics.JLE_LIT: {
+                const value = this.fetch(16);
+                const address = this.fetch(16);
+                if (value <= this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
+            case semantics.JLE_REG: {
+                const r1 = this.getNextRegister();
+                const immediateValue = this.registers.getUint16(r1);
+                const address = this.fetch(16);
+                if (immediateValue <= this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
+            case semantics.JGE_LIT: {
+                const value = this.fetch(16);
+                const address = this.fetch(16);
+                if (value >= this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
+            case semantics.JGE_REG: {
+                const r1 = this.getNextRegister();
+                const immediateValue = this.registers.getUint16(r1);
+                const address = this.fetch(16);
+                if (immediateValue >= this.getRegister('accumulator')) this.setRegister('ip', address);
+                return;
+            }
             case semantics.PSH_LIT_VAL: {
                 const value = this.fetch(16);
                 this.push(value);
@@ -326,6 +398,7 @@ class CPU {
                 this.push(this.registers.getUint16(registerIndex));
                 return;
             }
+            
             case semantics.POP: {
                 const registerIndex = this.getNextRegister();
                 const value = this.pop();

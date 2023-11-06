@@ -1,3 +1,9 @@
+/**
+ * Instruction / Semantics
+ * LIT = Literal / Immediate value in the register
+ * REG = Register itself
+ */
+
 const MOVE_LIT_REG     = 0x10;
 const MOVE_REG_REG     = 0x11;
 const MOVE_REG_MEM     = 0x12;
@@ -29,6 +35,18 @@ const XOR_REG_REG     = 0x33;
 const NOT             = 0x34;
 
 const JMP_NOT_EQ       = 0x15;
+const JNE_REG          = 0x40;
+const JEQ_REG          = 0x3E;
+const JEQ_LIT          = 0x41;
+const JLT_REG          = 0x42;
+const JLT_LIT          = 0x43;
+const JGT_REG          = 0x44;
+const JGT_LIT          = 0x45;
+const JLE_REG          = 0x46;
+const JLE_LIT          = 0x47;
+const JGE_REG          = 0x48;
+const JGE_LIT          = 0x49;
+
 const PSH_LIT_VAL      = 0x17;
 const PSH_REG_VAL      = 0x18;
 const POP              = 0x1A;
@@ -37,19 +55,20 @@ const CAL_REG          = 0x5F;
 const RET              = 0x60;
 const HALT             = 0xFF;
 
+const ACC_LOC = 0x0100;
+
 globals = {
     IP: 0, ACC: 1, 
     R1: 2, R2: 3, R3: 4, R4: 5, R5: 6, R6: 7, R7: 8, R8: 9, 
     SP: 10, FP: 11
 };
 
-const ACC_LOC = 0x0100;
-
 module.exports = {
     MOVE_LIT_REG, MOVE_REG_REG, MOVE_REG_MEM, MOVE_MEM_REG, MOVE_LIT_MEM, MOVE_REG_PRT_REG, MOVE_LIT_OFF_REG, 
     JMP_NOT_EQ, 
     ADD_REG_REG, ACC_LOC, ADD_LIT_REG,
     SUB_LIT_REG, SUB_REG_LIT, SUB_REG_REG,
+    JNE_REG, JEQ_REG, JEQ_LIT, JLT_REG, JLT_LIT, JGT_REG, JGT_LIT, JLE_REG, JLE_LIT, JGE_REG, JGE_LIT,
     INC_REG,
     DEC_REG,
     LSF_REG_LIT, LSF_REG_REG,
